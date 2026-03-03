@@ -1,18 +1,18 @@
-export type TStatus = "application" | "interview" | "offer" | "rejected";
+export type TStatus = 'application' | 'interview' | 'offer' | 'rejected';
 
 export type TJobSource =
-  | "linkedin"
-  | "indeed"
-  | "glassdoor"
-  | "company_website"
-  | "referral"
-  | "other";
+  | 'linkedin'
+  | 'indeed'
+  | 'glassdoor'
+  | 'company_website'
+  | 'referral'
+  | 'other';
 
 export type TOutcome =
-  | "pending"
-  | "in_progress"
-  | "successful"
-  | "unsuccessful";
+  | 'pending'
+  | 'in_progress'
+  | 'successful'
+  | 'unsuccessful';
 
 export interface IJobApplication {
   id: string;

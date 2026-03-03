@@ -1,2 +1,2 @@
-export * from "./jobApplication";
-export * from "./user";
+export * from './jobApplication';
+export * from './user';
