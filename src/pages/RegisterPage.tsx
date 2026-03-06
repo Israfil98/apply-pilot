@@ -1,8 +1,9 @@
 import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { GitHubIcon, GoogleIcon } from '../components/common';
+import useAuth from '../hooks/useAuth';
 
 interface IRegisterFormData {
   email: string;
@@ -13,24 +14,48 @@ interface IRegisterFormData {
 const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [authError, setAuthError] = useState('');
+
+  const { signUp, signInWithGoogle, signInWithGitHub } = useAuth();
+  const navigate = useNavigate();
 
   const {
     handleSubmit,
     register,
     getValues,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<IRegisterFormData>();
 
-  const onSubmit = (data: IRegisterFormData) => {
-    console.log('Register form submitted:', data);
+  const onSubmit = async (data: IRegisterFormData) => {
+    setAuthError('');
+    const { data: signUpData, error } = await signUp(data.email, data.password);
+
+    if (error) {
+      setAuthError(error.message);
+      return;
+    }
+
+    // Supabase returns fake success for existing emails (anti-enumeration)
+    if (signUpData?.user?.identities?.length === 0) {
+      setAuthError(
+        'An account with this email already exists. Try signing in instead.',
+      );
+      return;
+    }
+
+    navigate('/login');
   };
 
-  const handleGoogleRegister = () => {
-    console.log('Google register clicked');
+  const handleGoogleRegister = async () => {
+    setAuthError('');
+    const { error } = await signInWithGoogle();
+    if (error) setAuthError(error.message);
   };
 
-  const handleGitHubRegister = () => {
-    console.log('GitHub register clicked');
+  const handleGitHubRegister = async () => {
+    setAuthError('');
+    const { error } = await signInWithGitHub();
+    if (error) setAuthError(error.message);
   };
 
   return (
@@ -45,6 +70,13 @@ const RegisterPage = () => {
             Start tracking your job applications
           </p>
         </div>
+
+        {/* Auth Error */}
+        {authError && (
+          <div className="mb-4 rounded-lg bg-red-50 p-3 text-center text-sm text-red-600">
+            {authError}
+          </div>
+        )}
 
         {/* OAuth Buttons */}
         <div className="space-y-3">
@@ -173,9 +205,10 @@ const RegisterPage = () => {
 
           <button
             type="submit"
-            className="w-full rounded-lg bg-blue-600 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
+            disabled={isSubmitting}
+            className="w-full rounded-lg bg-blue-600 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Create account
+            {isSubmitting ? 'Creating account...' : 'Create account'}
           </button>
         </form>
 

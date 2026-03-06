@@ -1,8 +1,9 @@
 import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { GitHubIcon, GoogleIcon } from '../components/common';
+import useAuth from '../hooks/useAuth';
 
 interface ILoginFormData {
   email: string;
@@ -11,23 +12,39 @@ interface ILoginFormData {
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [authError, setAuthError] = useState('');
+
+  const { signIn, signInWithGoogle, signInWithGitHub } = useAuth();
+  const navigate = useNavigate();
 
   const {
     handleSubmit,
     register,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<ILoginFormData>();
 
-  const onSubmit = (data: ILoginFormData) => {
-    console.log('Login form submitted:', data);
+  const onSubmit = async (data: ILoginFormData) => {
+    setAuthError('');
+    const { error } = await signIn(data.email, data.password);
+
+    if (error) {
+      setAuthError(error.message);
+      return;
+    }
+
+    navigate('/dashboard');
   };
 
-  const handleGoogleLogin = () => {
-    console.log('Google login clicked');
+  const handleGoogleLogin = async () => {
+    setAuthError('');
+    const { error } = await signInWithGoogle();
+    if (error) setAuthError(error.message);
   };
 
-  const handleGitHubLogin = () => {
-    console.log('GitHub login clicked');
+  const handleGitHubLogin = async () => {
+    setAuthError('');
+    const { error } = await signInWithGitHub();
+    if (error) setAuthError(error.message);
   };
 
   return (
@@ -40,6 +57,13 @@ const LoginPage = () => {
             Sign in to continue tracking your applications
           </p>
         </div>
+
+        {/* Auth Error */}
+        {authError && (
+          <div className="mb-4 rounded-lg bg-red-50 p-3 text-center text-sm text-red-600">
+            {authError}
+          </div>
+        )}
 
         {/* OAuth Buttons */}
         <div className="space-y-3">
@@ -134,9 +158,10 @@ const LoginPage = () => {
 
           <button
             type="submit"
-            className="w-full rounded-lg bg-blue-600 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
+            disabled={isSubmitting}
+            className="w-full rounded-lg bg-blue-600 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Sign in
+            {isSubmitting ? 'Signing in...' : 'Sign in'}
           </button>
         </form>
 
