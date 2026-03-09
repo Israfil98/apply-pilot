@@ -1,28 +1,46 @@
 import { Plus } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
-import { ConfirmModal } from '../components/common';
+import { ConfirmModal, Pagination } from '../components/common';
 import { ApplicationsTable, StatusFilter } from '../components/JobApplications';
 import useApplications from '../hooks/useApplications';
 import useToastStore from '../stores/toastStore';
 import type { TApplicationStatus } from '../types';
 
+const ITEMS_PER_PAGE = 10;
+
 const ApplicationsPage = () => {
   const { applications, loading, error, deleteApplication } = useApplications();
+  const { addToast } = useToastStore();
   const [activeStatus, setActiveStatus] = useState<TApplicationStatus | 'All'>(
     'All',
   );
-  const { addToast } = useToastStore();
-
-  // Track which application ID is pending deletion — null means modal is closed
-  // We store the ID instead of a boolean so we know which one to delete on confirm
+  const [currentPage, setCurrentPage] = useState(1);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  // Step 1: Filter by status
   const filteredApplications = useMemo(() => {
     if (activeStatus === 'All') return applications;
     return applications.filter((app) => app.status === activeStatus);
   }, [applications, activeStatus]);
+
+  // Step 2: Calculate total pages from filtered results
+  const totalPages = Math.ceil(filteredApplications.length / ITEMS_PER_PAGE);
+
+  // Step 3: Slice the filtered array to get only the current page's items
+  // This is the final data that gets passed to the table
+  const paginatedApplications = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredApplications.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filteredApplications, currentPage]);
+
+  // Reset to page 1 when filter changes — otherwise the user might be
+  // on page 3 of "All" and switch to "Offer" which only has 1 page
+  const handleStatusChange = (status: TApplicationStatus | 'All') => {
+    setActiveStatus(status);
+    setCurrentPage(1);
+  };
 
   const handleDelete = async () => {
     if (!deleteId) return;
@@ -58,7 +76,7 @@ const ApplicationsPage = () => {
       <div className="mb-6">
         <StatusFilter
           activeStatus={activeStatus}
-          onStatusChange={setActiveStatus}
+          onStatusChange={handleStatusChange}
         />
       </div>
 
@@ -75,10 +93,23 @@ const ApplicationsPage = () => {
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
         </div>
       ) : (
-        <ApplicationsTable
-          applications={filteredApplications}
-          onDelete={(id) => setDeleteId(id)}
-        />
+        <>
+          <ApplicationsTable
+            applications={paginatedApplications}
+            onDelete={(id) => setDeleteId(id)}
+          />
+
+          {/* Pagination — sits below the table */}
+          <div className="mt-6">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              totalItems={filteredApplications.length}
+              itemsPerPage={ITEMS_PER_PAGE}
+            />
+          </div>
+        </>
       )}
 
       {/* Delete confirmation modal */}
