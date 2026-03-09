@@ -7,6 +7,7 @@ const LandingPage = lazy(() => import('./pages/LandingPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
+const ApplicationsPage = lazy(() => import('./pages/ApplicationsPage'));
 
 const Loading = () => (
   <div className="flex min-h-screen items-center justify-center">
@@ -28,6 +29,7 @@ const App = () => {
         {/* Protected routes — redirect to login if not logged in */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/applications" element={<ApplicationsPage />} />
         </Route>
       </Routes>
     </Suspense>

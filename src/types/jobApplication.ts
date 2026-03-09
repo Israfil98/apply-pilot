@@ -1,32 +1,15 @@
-export type TStatus = 'application' | 'interview' | 'offer' | 'rejected';
-
-export type TJobSource =
-  | 'linkedin'
-  | 'indeed'
-  | 'glassdoor'
-  | 'company_website'
-  | 'referral'
-  | 'other';
-
-export type TOutcome =
-  | 'pending'
-  | 'in_progress'
-  | 'successful'
-  | 'unsuccessful';
+export type TApplicationStatus = 'Applied' | 'Interview' | 'Offer' | 'Rejected';
 
 export interface IJobApplication {
   id: string;
-  companyName: string;
-  country: string;
-  city: string;
+  user_id: string;
+  company: string;
   position: string;
-  dateApplied: string;
-  status: TStatus;
-  contactPerson: string;
-  jobSource: TJobSource;
-  outcome: TOutcome;
-  notes: string;
-  jobUrl: string;
-  userId: string;
-  createdAt: string;
+  status: TApplicationStatus;
+  applied_date: string;
+  url: string | null;
+  notes: string | null;
+  salary: string | null;
+  location: string | null;
+  created_at: string;
 }
