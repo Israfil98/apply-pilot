@@ -1,6 +1,7 @@
 import { ArrowLeft, ExternalLink, Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
+import useToastStore from '../../stores/toastStore';
 import type { IJobApplication, TApplicationStatus } from '../../types';
 import { ConfirmModal } from '../common';
 
@@ -26,6 +27,7 @@ const ApplicationView = ({
   const [deleteError, setDeleteError] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const { addToast } = useToastStore();
 
   const handleDelete = async () => {
     setDeleteError('');
@@ -37,9 +39,11 @@ const ApplicationView = ({
       setDeleteError(error.message);
       setIsDeleting(false);
       setShowDeleteModal(false);
+      addToast(error.message, 'error');
       return;
     }
 
+    addToast('Application deleted successfully', 'success');
     navigate('/applications');
   };
 

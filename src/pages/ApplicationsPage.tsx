@@ -4,6 +4,7 @@ import { Link } from 'react-router';
 import { ConfirmModal } from '../components/common';
 import { ApplicationsTable, StatusFilter } from '../components/JobApplications';
 import useApplications from '../hooks/useApplications';
+import useToastStore from '../stores/toastStore';
 import type { TApplicationStatus } from '../types';
 
 const ApplicationsPage = () => {
@@ -11,6 +12,7 @@ const ApplicationsPage = () => {
   const [activeStatus, setActiveStatus] = useState<TApplicationStatus | 'All'>(
     'All',
   );
+  const { addToast } = useToastStore();
 
   // Track which application ID is pending deletion — null means modal is closed
   // We store the ID instead of a boolean so we know which one to delete on confirm
@@ -26,9 +28,16 @@ const ApplicationsPage = () => {
     if (!deleteId) return;
 
     setIsDeleting(true);
-    await deleteApplication(deleteId);
+    const { error: deleteError } = await deleteApplication(deleteId);
     setIsDeleting(false);
     setDeleteId(null);
+
+    if (deleteError) {
+      addToast(deleteError.message, 'error');
+      return;
+    }
+
+    addToast('Application deleted successfully', 'success');
   };
 
   return (

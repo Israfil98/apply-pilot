@@ -1,6 +1,7 @@
 import { LayoutDashboard, List } from 'lucide-react';
 import { Link, NavLink, Outlet } from 'react-router';
 import useAuth from '../../../hooks/useAuth';
+import { ToastContainer } from '../../common';
 
 // NavLink gives us an `isActive` property, so we can highlight the current page
 // This array keeps nav items as static data outside the component
@@ -67,6 +68,9 @@ const AppLayout = () => {
 
       {/* Page content — each protected page renders here */}
       <Outlet />
+
+      {/* Toasts render above all page content */}
+      <ToastContainer />
     </div>
   );
 };

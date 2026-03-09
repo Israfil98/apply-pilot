@@ -1,5 +1,6 @@
 import { X } from 'lucide-react';
 import { useForm } from 'react-hook-form';
+import useToastStore from '../../stores/toastStore';
 import type { IJobApplication, TApplicationStatus } from '../../types';
 
 interface IEditFormData {
@@ -37,6 +38,7 @@ const ApplicationEdit = ({
   onUpdate,
   onCancel,
 }: IApplicationEditProps) => {
+  const { addToast } = useToastStore();
   const {
     register,
     handleSubmit,
@@ -68,10 +70,13 @@ const ApplicationEdit = ({
       location: data.location || null,
     });
 
-    // If no error, tell the parent to switch back to view mode
-    if (!error) {
-      onCancel();
+    if (error) {
+      addToast(error.message, 'error');
+      return;
     }
+
+    addToast('Application updated successfully', 'success');
+    onCancel();
   };
 
   return (

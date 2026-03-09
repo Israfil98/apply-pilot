@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 import useApplications from '../../hooks/useApplications';
+import useToastStore from '../../stores/toastStore';
 import { type TApplicationStatus } from '../../types';
 
 // Form data shape — matches the fields the user fills in
@@ -33,6 +34,7 @@ const getTodayDate = (): string => {
 const AddApplicationForm = () => {
   const navigate = useNavigate();
   const { addApplication } = useApplications();
+  const { addToast } = useToastStore();
 
   const {
     register, // Connects inputs to React Hook Form (handles value, onChange, onBlur, ref)
@@ -57,7 +59,7 @@ const AddApplicationForm = () => {
     try {
       // Only send non-empty optional fields to Supabase
       // This avoids storing empty strings — null is cleaner in the DB
-      await addApplication({
+      const { error } = await addApplication({
         company: data.company,
         position: data.position,
         status: data.status,
@@ -68,14 +70,21 @@ const AddApplicationForm = () => {
         location: data.location || null,
       });
 
+      if (error) {
+        addToast(error.message, 'error');
+        return;
+      }
+
       // After successful insert, navigate to the applications list
       // The user will see their new application in the table
+      addToast('Application added successfully', 'success');
       navigate('/applications');
     } catch (error) {
       // Error is already handled inside useApplications hook
       // (it sets an error state), but we catch here to prevent
       // unhandled promise rejection
       console.error('Failed to add application:', error);
+      addToast('Failed to add application. Please try again.', 'error');
     }
   };
 
