@@ -1,19 +1,12 @@
 import { ExternalLink } from 'lucide-react';
 import { Link } from 'react-router';
-
-interface IApplication {
-  id: string;
-  company: string;
-  position: string;
-  status: string;
-  appliedDate: string;
-}
+import type { IJobApplication, TApplicationStatus } from '../../../types';
 
 interface IRecentApplicationsProps {
-  applications: IApplication[];
+  applications: IJobApplication[];
 }
 
-const statusStyles: Record<string, string> = {
+const statusStyles: Record<TApplicationStatus, string> = {
   Applied: 'bg-blue-100 text-blue-700',
   Interview: 'bg-amber-100 text-amber-700',
   Offer: 'bg-green-100 text-green-700',
@@ -28,7 +21,7 @@ const RecentApplications = ({ applications }: IRecentApplicationsProps) => {
           No applications yet. Start tracking your job search!
         </p>
         <Link
-          to="/applications"
+          to="/applications/new"
           className="mt-4 inline-block rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
         >
           Add your first application
@@ -68,21 +61,33 @@ const RecentApplications = ({ applications }: IRecentApplicationsProps) => {
                 key={app.id}
                 className="border-b border-gray-50 transition-colors last:border-0 hover:bg-gray-50"
               >
-                <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                  {app.company}
+                <td className="px-6 py-4">
+                  <Link
+                    to={`/applications/${app.id}`}
+                    className="text-sm font-medium text-gray-900 hover:text-blue-600"
+                  >
+                    {app.company}
+                  </Link>
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-600">
                   {app.position}
                 </td>
                 <td className="px-6 py-4">
                   <span
-                    className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${statusStyles[app.status] ?? 'bg-gray-100 text-gray-700'}`}
+                    className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${statusStyles[app.status]}`}
                   >
                     {app.status}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-500">
-                  {app.appliedDate}
+                  {new Date(app.applied_date + 'T00:00:00').toLocaleDateString(
+                    'en-US',
+                    {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                    },
+                  )}
                 </td>
               </tr>
             ))}
