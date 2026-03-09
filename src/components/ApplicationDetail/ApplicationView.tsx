@@ -2,6 +2,7 @@ import { ArrowLeft, ExternalLink, Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import type { IJobApplication, TApplicationStatus } from '../../types';
+import { ConfirmModal } from '../common';
 
 interface IApplicationViewProps {
   application: IJobApplication;
@@ -23,18 +24,19 @@ const ApplicationView = ({
 }: IApplicationViewProps) => {
   const navigate = useNavigate();
   const [deleteError, setDeleteError] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
-    const confirmed = window.confirm(
-      'Are you sure you want to delete this application? This cannot be undone.',
-    );
-    if (!confirmed) return;
-
     setDeleteError('');
+    setIsDeleting(true);
+
     const { error } = await onDelete(application.id);
 
     if (error) {
       setDeleteError(error.message);
+      setIsDeleting(false);
+      setShowDeleteModal(false);
       return;
     }
 
@@ -102,13 +104,10 @@ const ApplicationView = ({
           {application.url && (
             <div>
               <p className="text-sm font-medium text-gray-500">Job URL</p>
-
-              <a
-                href={application.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-0.5 inline-flex items-center gap-1 text-blue-600 hover:underline"
-              >
+              href={application.url}
+              target="_blank" rel="noopener noreferrer" className="mt-0.5
+              inline-flex items-center gap-1 text-blue-600 hover:underline"
+              <a>
                 {application.url}
                 <ExternalLink className="h-3.5 w-3.5" />
               </a>
@@ -137,7 +136,7 @@ const ApplicationView = ({
           </button>
           <button
             type="button"
-            onClick={handleDelete}
+            onClick={() => setShowDeleteModal(true)}
             className="flex items-center gap-2 rounded-lg border border-red-200 px-5 py-2.5 text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
           >
             <Trash2 className="h-4 w-4" />
@@ -149,6 +148,20 @@ const ApplicationView = ({
           <p className="mt-3 text-sm text-red-500">{deleteError}</p>
         )}
       </div>
+
+      {/* Delete confirmation modal */}
+      {showDeleteModal && (
+        <ConfirmModal
+          title="Delete Application"
+          message="Are you sure you want to delete this application? This action cannot be undone."
+          confirmLabel="Delete"
+          cancelLabel="Cancel"
+          variant="danger"
+          isLoading={isDeleting}
+          onConfirm={handleDelete}
+          onCancel={() => setShowDeleteModal(false)}
+        />
+      )}
     </div>
   );
 };

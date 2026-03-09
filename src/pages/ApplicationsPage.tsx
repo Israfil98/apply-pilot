@@ -1,6 +1,7 @@
 import { Plus } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
+import { ConfirmModal } from '../components/common';
 import { ApplicationsTable, StatusFilter } from '../components/JobApplications';
 import useApplications from '../hooks/useApplications';
 import type { TApplicationStatus } from '../types';
@@ -11,18 +12,23 @@ const ApplicationsPage = () => {
     'All',
   );
 
+  // Track which application ID is pending deletion — null means modal is closed
+  // We store the ID instead of a boolean so we know which one to delete on confirm
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const filteredApplications = useMemo(() => {
     if (activeStatus === 'All') return applications;
     return applications.filter((app) => app.status === activeStatus);
   }, [applications, activeStatus]);
 
-  const handleDelete = async (id: string) => {
-    const confirmed = window.confirm(
-      'Are you sure you want to delete this application?',
-    );
-    if (!confirmed) return;
+  const handleDelete = async () => {
+    if (!deleteId) return;
 
-    await deleteApplication(id);
+    setIsDeleting(true);
+    await deleteApplication(deleteId);
+    setIsDeleting(false);
+    setDeleteId(null);
   };
 
   return (
@@ -62,7 +68,21 @@ const ApplicationsPage = () => {
       ) : (
         <ApplicationsTable
           applications={filteredApplications}
-          onDelete={handleDelete}
+          onDelete={(id) => setDeleteId(id)}
+        />
+      )}
+
+      {/* Delete confirmation modal */}
+      {deleteId && (
+        <ConfirmModal
+          title="Delete Application"
+          message="Are you sure you want to delete this application? This action cannot be undone."
+          confirmLabel="Delete"
+          cancelLabel="Cancel"
+          variant="danger"
+          isLoading={isDeleting}
+          onConfirm={handleDelete}
+          onCancel={() => setDeleteId(null)}
         />
       )}
     </div>
