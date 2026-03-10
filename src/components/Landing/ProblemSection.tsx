@@ -29,7 +29,7 @@ const ProblemSection = () => {
         tag="The Problem"
         title="Job searching shouldn't feel like chaos"
       />
-      <div className="mx-auto flex max-w-4xl gap-8">
+      <div className="mx-auto flex max-w-4xl flex-col gap-8 sm:flex-row">
         {painPoints.map((point) => (
           <div
             key={point.subtitle}

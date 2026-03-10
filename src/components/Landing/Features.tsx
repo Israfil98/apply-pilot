@@ -37,13 +37,13 @@ const Features = () => {
           title="Everything you need to stay organized"
           description="Simple, powerful tools that help you take control of your job search."
         />
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           {features.map((feature) => (
             <div
               key={feature.subtitle}
-              className="rounded-2xl border border-gray-100 bg-white p-9 text-left transition-transform hover:-translate-y-1 hover:shadow-lg"
+              className="rounded-2xl border border-gray-100 bg-white p-9 text-center transition-transform hover:-translate-y-1 hover:shadow-lg sm:text-left"
             >
-              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50">
+              <div className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 sm:mx-0">
                 <feature.icon className="h-6 w-6 text-blue-600" />
               </div>
               <h3 className="mb-2 text-lg font-semibold text-gray-900">

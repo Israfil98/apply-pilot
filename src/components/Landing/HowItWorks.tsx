@@ -27,8 +27,8 @@ const HowItWorks = () => {
         tag="How It Works"
         title="Up and running in 3 simple steps"
       />
-      <div className="relative mx-auto flex max-w-3xl justify-center gap-16">
-        <div className="absolute top-8 right-[20%] left-[20%] h-0.5 bg-linear-to-r from-blue-100 via-blue-500 to-blue-100" />
+      <div className="relative mx-auto flex max-w-3xl flex-col items-center gap-12 sm:flex-row sm:items-start sm:justify-center sm:gap-16">
+        <div className="absolute top-8 right-[20%] left-[20%] hidden h-0.5 bg-linear-to-r from-blue-100 via-blue-500 to-blue-100 sm:block" />
         {steps.map((step, index) => (
           <div
             key={step.title}
