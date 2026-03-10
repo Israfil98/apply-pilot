@@ -1,7 +1,5 @@
 @import 'tailwindcss';
 /* Safari date input fix — Safari uses inline-flex internally which ignores width: 100% */
-input[type='date']::-webkit-datetime-edit,
-input[type='date']::-webkit-datetime-edit-fields-wrapper {
-  display: block;
-  padding: 0;
+input[type='date'] {
+  width: -webkit-fill-available;
 }

@@ -94,7 +94,7 @@ const ApplicationEdit = ({
         </button>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
         <div className="space-y-5">
           {/* Company — required */}
           <div>
