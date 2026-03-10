@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="grad4" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#2563EB" />
+      <stop offset="100%" style="stop-color:#3B82F6" />
+    </linearGradient>
+  </defs>
+  <!-- Rounded square background -->
+  <rect width="512" height="512" rx="112" fill="url(#grad4)" />
+  <!-- Abstract "A" shape that doubles as an upward arrow -->
+  <path d="M256 120l120 272h-56l-24-56h-80l-24 56h-56L256 120z" fill="white" />
+  <!-- Crossbar of the A -->
+  <rect x="208" y="280" width="96" height="4" rx="2" fill="#2563EB" />
+  <!-- Inner triangle cutout to make it look like an A -->
+  <path d="M256 200l36 84h-72l36-84z" fill="#2563EB" />
+</svg>

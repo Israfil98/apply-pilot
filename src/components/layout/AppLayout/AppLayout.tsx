@@ -30,7 +30,15 @@ const AppLayout = () => {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           {/* Left side — brand + desktop nav links */}
           <div className="flex items-center gap-8">
-            <Link to="/dashboard" className="text-xl font-bold text-gray-900">
+            <Link
+              to="/dashboard"
+              className="flex items-center gap-2 text-xl font-bold text-gray-900"
+            >
+              <img
+                src="/logo.svg"
+                alt="Apply Pilot"
+                className="h-8 w-8 rounded-lg"
+              />
               Apply Pilot
             </Link>
 
