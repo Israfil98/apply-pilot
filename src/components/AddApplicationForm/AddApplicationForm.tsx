@@ -154,7 +154,7 @@ const AddApplicationForm = () => {
           </div>
 
           {/* Status + Applied Date — side by side on larger screens */}
-          <div className="grid grid-cols-1 gap-5 overflow-hidden sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             {/* Status */}
             <div>
               <label
@@ -187,7 +187,7 @@ const AddApplicationForm = () => {
               <input
                 id="applied_date"
                 type="date"
-                className="w-full max-w-full min-w-0 rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 transition-colors focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-gray-900 transition-colors focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 {...register('applied_date')}
               />
             </div>
