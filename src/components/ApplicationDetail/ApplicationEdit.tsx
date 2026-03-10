@@ -94,7 +94,7 @@ const ApplicationEdit = ({
         </button>
       </div>
 
-      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
         <div className="space-y-5">
           {/* Company — required */}
           <div>
@@ -147,7 +147,7 @@ const ApplicationEdit = ({
           </div>
 
           {/* Status + Applied Date */}
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 overflow-hidden sm:grid-cols-2">
             <div>
               <label
                 htmlFor="status"
@@ -178,7 +178,7 @@ const ApplicationEdit = ({
               <input
                 id="applied_date"
                 type="date"
-                className="w-full min-w-0 rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 transition-colors focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full max-w-full min-w-0 rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 transition-colors focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 {...register('applied_date')}
               />
             </div>
