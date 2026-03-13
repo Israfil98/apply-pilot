@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import { LoadingSpinner } from './components/common';
 import ProtectedRoute from './components/layout/ProtectedRoute';
 import PublicRoute from './components/layout/PublicRoute';
 
@@ -13,15 +14,9 @@ const ApplicationDetailPage = lazy(
   () => import('./pages/ApplicationDetailPage'),
 );
 
-const Loading = () => (
-  <div className="flex min-h-screen items-center justify-center">
-    <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
-  </div>
-);
-
 const App = () => {
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={<LoadingSpinner fullScreen />}>
       <Routes>
         {/* Public routes — redirect to dashboard if logged in */}
         <Route element={<PublicRoute />}>

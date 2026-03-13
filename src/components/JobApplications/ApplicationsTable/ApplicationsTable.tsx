@@ -1,18 +1,13 @@
 import { Trash2 } from 'lucide-react';
 import { Link } from 'react-router';
-import type { IJobApplication, TApplicationStatus } from '../../../types';
+import { formatDateShort } from '../../../lib/formatDate';
+import type { IJobApplication } from '../../../types';
+import { StatusBadge } from '../../common';
 
 interface IApplicationsTableProps {
   applications: IJobApplication[];
   onDelete: (id: string) => void;
 }
-
-const statusStyles: Record<TApplicationStatus, string> = {
-  Applied: 'bg-blue-100 text-blue-700',
-  Interview: 'bg-amber-100 text-amber-700',
-  Offer: 'bg-green-100 text-green-700',
-  Rejected: 'bg-red-100 text-red-700',
-};
 
 const ApplicationsTable = ({
   applications,
@@ -30,11 +25,10 @@ const ApplicationsTable = ({
 
   return (
     <>
-      {/* Mobile cards — visible below sm (640px) */}
+      {/* Mobile cards */}
       <div className="flex flex-col gap-3 sm:hidden">
         {applications.map((app) => (
           <div key={app.id} className="rounded-xl bg-white p-4 shadow-sm">
-            {/* Top row: company + status */}
             <div className="flex items-start justify-between">
               <Link
                 to={`/applications/${app.id}`}
@@ -42,31 +36,18 @@ const ApplicationsTable = ({
               >
                 {app.company}
               </Link>
-              <span
-                className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${statusStyles[app.status]}`}
-              >
-                {app.status}
-              </span>
+              <StatusBadge status={app.status} />
             </div>
 
-            {/* Position */}
             <p className="mt-1 text-sm text-gray-600">{app.position}</p>
 
-            {/* Bottom row: location, date, delete */}
             <div className="mt-3 flex items-center justify-between border-t border-gray-100 pt-3">
               <div className="flex flex-col gap-0.5">
                 <p className="text-xs text-gray-500">
                   {app.location ?? 'No location'}
                 </p>
                 <p className="text-xs text-gray-400">
-                  {new Date(app.applied_date + 'T00:00:00').toLocaleDateString(
-                    'en-US',
-                    {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric',
-                    },
-                  )}
+                  {formatDateShort(app.applied_date)}
                 </p>
               </div>
               <button
@@ -81,7 +62,7 @@ const ApplicationsTable = ({
         ))}
       </div>
 
-      {/* Desktop table — visible at sm (640px) and above */}
+      {/* Desktop table */}
       <div className="hidden overflow-hidden rounded-2xl bg-white shadow-sm sm:block">
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -113,23 +94,13 @@ const ApplicationsTable = ({
                     {app.position}
                   </td>
                   <td className="px-6 py-4">
-                    <span
-                      className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${statusStyles[app.status]}`}
-                    >
-                      {app.status}
-                    </span>
+                    <StatusBadge status={app.status} />
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-500">
                     {app.location ?? '—'}
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-500">
-                    {new Date(
-                      app.applied_date + 'T00:00:00',
-                    ).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric',
-                    })}
+                    {formatDateShort(app.applied_date)}
                   </td>
                   <td className="px-6 py-4">
                     <button

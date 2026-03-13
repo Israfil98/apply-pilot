@@ -1,5 +1,6 @@
 import { useParams } from 'react-router';
 import { ApplicationDetail } from '../components/ApplicationDetail';
+import { LoadingSpinner } from '../components/common';
 import useApplications from '../hooks/useApplications';
 
 const ApplicationDetailPage = () => {
@@ -11,11 +12,7 @@ const ApplicationDetailPage = () => {
   const application = applications.find((app) => app.id === id);
 
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
-      </div>
-    );
+    return <LoadingSpinner fullScreen />;
   }
 
   if (error) {

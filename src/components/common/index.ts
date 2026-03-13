@@ -1,7 +1,12 @@
-export { default as Button } from './Button';
+export { Button } from './Button';
 export { ConfirmModal } from './ConfirmModal';
-export { default as ErrorBoundary } from './ErrorBoundary';
+export { ErrorBoundary } from './ErrorBoundary';
+export { FormInput } from './FormInput';
+export { FormSelect } from './FormSelect';
+export { FormTextarea } from './FormTextarea';
 export { GitHubIcon, GoogleIcon } from './Icons';
+export { LoadingSpinner } from './LoadingSpinner';
 export { Pagination } from './Pagination';
-export { default as SectionHeader } from './SectionHeader';
+export { SectionHeader } from './SectionHeader';
+export { StatusBadge } from './StatusBadge';
 export { ToastContainer } from './Toast';

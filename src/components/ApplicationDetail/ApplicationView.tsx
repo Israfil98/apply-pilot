@@ -1,22 +1,29 @@
 import { ArrowLeft, ExternalLink, Pencil, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
+import { formatDateLong } from '../../lib/formatDate';
 import useToastStore from '../../stores/toastStore';
-import type { IJobApplication, TApplicationStatus } from '../../types';
-import { ConfirmModal } from '../common';
-
+import type { IJobApplication } from '../../types';
+import { ConfirmModal, StatusBadge } from '../common';
 interface IApplicationViewProps {
   application: IJobApplication;
   onEdit: () => void;
   onDelete: (id: string) => Promise<{ error: { message: string } | null }>;
 }
 
-const STATUS_STYLES: Record<TApplicationStatus, string> = {
-  Applied: 'bg-blue-100 text-blue-700',
-  Interview: 'bg-amber-100 text-amber-700',
-  Offer: 'bg-green-100 text-green-700',
-  Rejected: 'bg-red-100 text-red-700',
-};
+// Small helper — only used in this file, so it stays here
+const DetailField = ({
+  label,
+  children,
+}: {
+  label: string;
+  children: ReactNode;
+}) => (
+  <div>
+    <p className="text-sm font-medium text-gray-500">{label}</p>
+    <div className="mt-0.5">{children}</div>
+  </div>
+);
 
 const ApplicationView = ({
   application,
@@ -24,19 +31,16 @@ const ApplicationView = ({
   onDelete,
 }: IApplicationViewProps) => {
   const navigate = useNavigate();
-  const [deleteError, setDeleteError] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const { addToast } = useToastStore();
 
   const handleDelete = async () => {
-    setDeleteError('');
     setIsDeleting(true);
 
     const { error } = await onDelete(application.id);
 
     if (error) {
-      setDeleteError(error.message);
       setIsDeleting(false);
       setShowDeleteModal(false);
       addToast(error.message, 'error');
@@ -65,66 +69,51 @@ const ApplicationView = ({
             </h1>
             <p className="mt-1 text-lg text-gray-500">{application.company}</p>
           </div>
-          <span
-            className={`rounded-full px-3 py-1 text-sm font-medium ${STATUS_STYLES[application.status]}`}
-          >
-            {application.status}
-          </span>
+          <StatusBadge status={application.status} />
         </div>
       </div>
 
       {/* Details card */}
       <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
         <div className="space-y-4">
-          {/* Applied Date — always shown */}
-          <div>
-            <p className="text-sm font-medium text-gray-500">Applied Date</p>
-            <p className="mt-0.5 text-gray-900">
-              {new Date(
-                application.applied_date + 'T00:00:00',
-              ).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
+          <DetailField label="Applied Date">
+            <p className="text-gray-900">
+              {formatDateLong(application.applied_date)}
             </p>
-          </div>
+          </DetailField>
 
-          {/* Optional fields — only rendered if they have a value */}
           {application.location && (
-            <div>
-              <p className="text-sm font-medium text-gray-500">Location</p>
-              <p className="mt-0.5 text-gray-900">{application.location}</p>
-            </div>
+            <DetailField label="Location">
+              <p className="text-gray-900">{application.location}</p>
+            </DetailField>
           )}
 
           {application.salary && (
-            <div>
-              <p className="text-sm font-medium text-gray-500">Salary</p>
-              <p className="mt-0.5 text-gray-900">{application.salary}</p>
-            </div>
+            <DetailField label="Salary">
+              <p className="text-gray-900">{application.salary}</p>
+            </DetailField>
           )}
 
           {application.url && (
-            <div>
-              <p className="text-sm font-medium text-gray-500">Job URL</p>
-              href={application.url}
-              target="_blank" rel="noopener noreferrer" className="mt-0.5
-              inline-flex items-center gap-1 text-blue-600 hover:underline"
-              <a>
+            <DetailField label="Job URL">
+              <a
+                href={application.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-blue-600 hover:underline"
+              >
                 {application.url}
                 <ExternalLink className="h-3.5 w-3.5" />
               </a>
-            </div>
+            </DetailField>
           )}
 
           {application.notes && (
-            <div>
-              <p className="text-sm font-medium text-gray-500">Notes</p>
-              <p className="mt-0.5 whitespace-pre-wrap text-gray-900">
+            <DetailField label="Notes">
+              <p className="whitespace-pre-wrap text-gray-900">
                 {application.notes}
               </p>
-            </div>
+            </DetailField>
           )}
         </div>
 
@@ -147,10 +136,6 @@ const ApplicationView = ({
             Delete
           </button>
         </div>
-
-        {deleteError && (
-          <p className="mt-3 text-sm text-red-500">{deleteError}</p>
-        )}
       </div>
 
       {/* Delete confirmation modal */}

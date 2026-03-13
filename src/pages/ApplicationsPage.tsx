@@ -1,7 +1,7 @@
 import { Plus } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
-import { ConfirmModal, Pagination } from '../components/common';
+import { ConfirmModal, LoadingSpinner, Pagination } from '../components/common';
 import { ApplicationsTable, StatusFilter } from '../components/JobApplications';
 import useApplications from '../hooks/useApplications';
 import useToastStore from '../stores/toastStore';
@@ -89,9 +89,7 @@ const ApplicationsPage = () => {
 
       {/* Loading State */}
       {loading ? (
-        <div className="flex items-center justify-center py-12">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
-        </div>
+        <LoadingSpinner />
       ) : (
         <>
           <ApplicationsTable

@@ -1,17 +1,12 @@
 import { ExternalLink } from 'lucide-react';
 import { Link } from 'react-router';
-import type { IJobApplication, TApplicationStatus } from '../../../types';
+import { formatDateShort } from '../../../lib/formatDate';
+import type { IJobApplication } from '../../../types';
+import { StatusBadge } from '../../common';
 
 interface IRecentApplicationsProps {
   applications: IJobApplication[];
 }
-
-const statusStyles: Record<TApplicationStatus, string> = {
-  Applied: 'bg-blue-100 text-blue-700',
-  Interview: 'bg-amber-100 text-amber-700',
-  Offer: 'bg-green-100 text-green-700',
-  Rejected: 'bg-red-100 text-red-700',
-};
 
 const RecentApplications = ({ applications }: IRecentApplicationsProps) => {
   if (applications.length === 0) {
@@ -56,22 +51,11 @@ const RecentApplications = ({ applications }: IRecentApplicationsProps) => {
               >
                 {app.company}
               </Link>
-              <span
-                className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${statusStyles[app.status]}`}
-              >
-                {app.status}
-              </span>
+              <StatusBadge status={app.status} />
             </div>
             <p className="mt-1 text-sm text-gray-600">{app.position}</p>
             <p className="mt-2 text-xs text-gray-400">
-              {new Date(app.applied_date + 'T00:00:00').toLocaleDateString(
-                'en-US',
-                {
-                  month: 'short',
-                  day: 'numeric',
-                  year: 'numeric',
-                },
-              )}
+              {formatDateShort(app.applied_date)}
             </p>
           </div>
         ))}
@@ -107,20 +91,10 @@ const RecentApplications = ({ applications }: IRecentApplicationsProps) => {
                     {app.position}
                   </td>
                   <td className="px-6 py-4">
-                    <span
-                      className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${statusStyles[app.status]}`}
-                    >
-                      {app.status}
-                    </span>
+                    <StatusBadge status={app.status} />
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-500">
-                    {new Date(
-                      app.applied_date + 'T00:00:00',
-                    ).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric',
-                    })}
+                    {formatDateShort(app.applied_date)}
                   </td>
                 </tr>
               ))}

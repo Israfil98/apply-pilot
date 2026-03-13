@@ -1,5 +1,6 @@
 import { Briefcase, CalendarCheck, Trophy, XCircle } from 'lucide-react';
 import { useMemo } from 'react';
+import { LoadingSpinner } from '../components/common';
 import { RecentApplications, StatsCard } from '../components/Dashboard';
 import useApplications from '../hooks/useApplications';
 
@@ -60,11 +61,7 @@ const DashboardPage = () => {
   );
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   if (error) {
